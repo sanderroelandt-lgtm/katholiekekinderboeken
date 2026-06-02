@@ -252,7 +252,7 @@
     background:var(--bg);font-size:.95rem;
   }
   .delivery-opts .radio:hover{border-color:var(--accent);}
-  .delivery-opts .radio input{accent-color:var(--accent);}
+  .delivery-opts .radio input{accent-color:var(--accent);width:auto;flex:none;margin:0;}
   .delivery-opts .free{color:var(--accent);font-weight:700;}
 
   .empty-cat{padding:40px 10px;color:var(--muted);font-style:italic;text-align:center;}
@@ -385,6 +385,8 @@
     }
     .sidebar h3{display:none;}
     .cat-search{padding:6px 22px 8px;}
+    .delivery-opts{flex-direction:column;}
+    .delivery-opts .radio{min-width:0;}
     /* overschrijf het inklappen — op mobiel altijd tonen */
     .sidebar.collapsed .cat-list{display:flex;}
     .cat-list{
