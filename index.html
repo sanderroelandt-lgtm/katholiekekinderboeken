@@ -424,9 +424,9 @@
   }
   @media print{nav.main,.order-bar,footer.site{display:none;}}
 </style>
-<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -2828,7 +2828,7 @@ document.getElementById("orderOverlay").addEventListener("click", e=>{
 /* ================================================================
    START
    ================================================================ */
-async function init(){
+function init(){
   loadLocalDefaults();
   // Leg het ingebouwde standaardlogo vast (voor 'standaardlogo herstellen')
   const headerLogo = document.querySelector(".brand .logo");
@@ -2836,7 +2836,7 @@ async function init(){
   setupAdminLoginUI();
   setCopyright();
 
-  // 1) Meteen tonen met de ingebouwde catalogus (geen wachten op de database)
+  // 1) Meteen tonen met de ingebouwde catalogus (geen wachten op scripts of database)
   applySettings();
   renderTexts();
   renderCategories();
@@ -2844,15 +2844,20 @@ async function init(){
   renderOrderBar();
   route();
 
-  const useFb = firebaseReady() && initFirebase();
-  if(!useFb){
+  // 2) Database pas aanspreken zodra de (uitgestelde) Firebase-scripts geladen zijn
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", startDatabase);
+  }else{
+    startDatabase();
+  }
+}
+async function startDatabase(){
+  if(!(firebaseReady() && initFirebase())){
     coversReady = true;
     renderGrid();
     return;
   }
-
   watchAuth();
-  // 2) Catalogus uit de database halen en stilletjes verversen
   try{ await loadFromFirestore(); }
   catch(e){ console.warn("Catalogus uit database laden mislukt — ingebouwde versie blijft staan.", e); }
   applySettings();
@@ -2860,7 +2865,6 @@ async function init(){
   renderCategories();
   renderGrid();
   renderOrderBar();
-
   // 3) Covers op de achtergrond laden en daarna invullen
   loadCovers().finally(()=>{ coversReady = true; renderGrid(); });
 }
