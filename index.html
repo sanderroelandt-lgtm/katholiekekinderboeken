@@ -908,10 +908,12 @@ const FIREBASE_CONFIG = {
 };
 
 let fbApp=null, db=null, auth=null;
-function firebaseReady(){
-  return (typeof firebase!=="undefined") && FIREBASE_CONFIG &&
-         FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.indexOf("PLAK-")!==0 &&
+function firebaseConfigured(){
+  return FIREBASE_CONFIG && FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.indexOf("PLAK-")!==0 &&
          FIREBASE_CONFIG.projectId && FIREBASE_CONFIG.projectId.indexOf("PLAK-")!==0;
+}
+function firebaseReady(){
+  return (typeof firebase!=="undefined") && firebaseConfigured();
 }
 function initFirebase(){
   if(fbApp) return true;
@@ -1820,7 +1822,7 @@ function loadLocalDefaults(){
   CATEGORIES = DEFAULT_CATEGORIES.slice();
   settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
 
-  if(firebaseReady()) return; // database is de bron — geen localStorage
+  if(firebaseConfigured()) return; // database is de bron — geen localStorage
 
   // Geen database: localStorage-overrides toepassen (zoals voorheen)
   const storedVer = localStorage.getItem("kkb_version");
@@ -2836,36 +2838,47 @@ function init(){
   setupAdminLoginUI();
   setCopyright();
 
-  // 1) Meteen tonen met de ingebouwde catalogus (geen wachten op scripts of database)
   applySettings();
   renderTexts();
-  renderCategories();
-  renderGrid();
   renderOrderBar();
   route();
 
-  // 2) Database pas aanspreken zodra de (uitgestelde) Firebase-scripts geladen zijn
-  if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", startDatabase);
+  if(firebaseConfigured()){
+    // Geen (mogelijk verouderde) ingebouwde catalogus tonen: korte laadstatus,
+    // daarna meteen de database-versie.
+    const g=document.getElementById("bookGrid");
+    if(g) g.innerHTML='<p style="padding:30px 4px;color:var(--muted);">Catalogus laden…</p>';
+    if(document.readyState === "loading"){
+      document.addEventListener("DOMContentLoaded", startDatabase);
+    }else{
+      startDatabase();
+    }
   }else{
-    startDatabase();
+    // Geen database geconfigureerd: ingebouwde versie tonen (preview/offline)
+    coversReady = true;
+    renderCategories();
+    renderGrid();
   }
 }
 async function startDatabase(){
   if(!(firebaseReady() && initFirebase())){
+    // Scripts niet geladen: toon als terugval de ingebouwde versie
     coversReady = true;
+    renderCategories();
     renderGrid();
     return;
   }
   watchAuth();
-  try{ await loadFromFirestore(); }
-  catch(e){ console.warn("Catalogus uit database laden mislukt — ingebouwde versie blijft staan.", e); }
+  try{
+    await loadFromFirestore();   // catalogus-tekst (klein, snel) — de actuele versie
+  }catch(e){
+    console.warn("Catalogus uit database laden mislukt — ingebouwde versie als terugval.", e);
+  }
   applySettings();
   renderTexts();
   renderCategories();
-  renderGrid();
+  renderGrid();          // alle info meteen tonen (covers volgen)
   renderOrderBar();
-  // 3) Covers op de achtergrond laden en daarna invullen
   loadCovers().finally(()=>{ coversReady = true; renderGrid(); });
 }
 init();
