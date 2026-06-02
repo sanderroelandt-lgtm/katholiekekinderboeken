@@ -827,7 +827,7 @@
             <option value="Ander">Ander</option>
           </select>
         </div>
-        <div><label>Telefoon (optioneel)</label><input type="tel" id="oPhone"></div>
+        <div><label id="phoneLabel">Telefoon (optioneel)</label><input type="tel" id="oPhone"></div>
         <div class="full"><label>Opmerkingen</label><textarea id="oNotes" rows="3"></textarea></div>
       </div>
 
@@ -2318,6 +2318,8 @@ function updateDelivery(){
   ["rowAddress","rowZip","rowCity","rowCountry"].forEach(id=>{
     const el=document.getElementById(id); if(el) el.style.display = mode==="verzenden" ? "" : "none";
   });
+  const pl=document.getElementById("phoneLabel");
+  if(pl) pl.innerHTML = (mode==="afhalen") ? 'Telefoon <span class="req">*</span>' : 'Telefoon (optioneel)';
 }
 function closeOrderModal(){ document.getElementById("orderOverlay").classList.remove("show"); }
 
@@ -2351,6 +2353,9 @@ function submitOrder(){
   const fields = { first:f("oFirst"), last:f("oLast"), email:f("oEmail") };
   if(mode==="verzenden"){
     fields.address=f("oAddress"); fields.zip=f("oZip"); fields.city=f("oCity");
+  }
+  if(mode==="afhalen"){
+    fields.phone=f("oPhone");
   }
   let ok = true;
   for(const k in fields){
