@@ -2836,26 +2836,33 @@ async function init(){
   setupAdminLoginUI();
   setCopyright();
 
-  const useFb = firebaseReady() && initFirebase();
-  if(useFb){
-    try{ await loadFromFirestore(); }   // catalogus-tekst (klein, snel)
-    catch(e){ console.warn("Catalogus uit database laden mislukt — ingebouwde versie wordt getoond.", e); }
-    watchAuth();
-  }else{
-    coversReady = true;                 // geen database: geen losse covers om op te wachten
-  }
-
+  // 1) Meteen tonen met de ingebouwde catalogus (geen wachten op de database)
   applySettings();
   renderTexts();
   renderCategories();
-  renderGrid();        // boeken meteen tonen; covers vallen straks in
+  renderGrid();
   renderOrderBar();
   route();
 
-  if(useFb){
-    // Covers op de achtergrond laden en daarna de afbeeldingen invullen
-    loadCovers().finally(()=>{ coversReady = true; renderGrid(); });
+  const useFb = firebaseReady() && initFirebase();
+  if(!useFb){
+    coversReady = true;
+    renderGrid();
+    return;
   }
+
+  watchAuth();
+  // 2) Catalogus uit de database halen en stilletjes verversen
+  try{ await loadFromFirestore(); }
+  catch(e){ console.warn("Catalogus uit database laden mislukt — ingebouwde versie blijft staan.", e); }
+  applySettings();
+  renderTexts();
+  renderCategories();
+  renderGrid();
+  renderOrderBar();
+
+  // 3) Covers op de achtergrond laden en daarna invullen
+  loadCovers().finally(()=>{ coversReady = true; renderGrid(); });
 }
 init();
 </script>
