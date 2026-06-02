@@ -644,7 +644,7 @@
             <div>
               <label>Toegevoegd op</label>
               <input type="date" id="bDate">
-              <p style="font-size:.76rem;color:var(--muted);margin:4px 0 0;">Binnen 4 maanden = met 'Nieuw' bovenaan.</p>
+              <p id="newHint" style="font-size:.76rem;color:var(--muted);margin:4px 0 0;">Binnen 4 maanden = met 'Nieuw' bovenaan.</p>
             </div>
             <div class="full">
               <label>Omschrijving</label>
@@ -738,6 +738,11 @@
               <label>Voorbeeldtekst bij het delen van de link</label>
               <textarea id="setPreview" rows="3"></textarea>
               <p class="note">De korte omschrijving die mensen zien wanneer je de link ergens plakt (in een chatbericht, e-mail of op sociale media).</p>
+            </div>
+            <div class="full">
+              <label>Een boek is 'Nieuw' gedurende (maanden)</label>
+              <input type="number" id="setNewMonths" min="0" max="60" step="1" style="max-width:120px;">
+              <p class="note">Boeken die binnen dit aantal maanden zijn toegevoegd, krijgen het 'Nieuw'-label en staan bovenaan in hun categorie. Zet op 0 om dit uit te schakelen.</p>
             </div>
             <div class="full">
               <label>Afhaallocaties (één per regel)</label>
@@ -877,6 +882,7 @@ const DEFAULT_SETTINGS = {
   email: "katholiekekinderboeken@outlook.com",
   previewText: "Katholieke kinderboeken opnieuw uitgegeven. Bekijk de catalogus en bestel.",
   logo: "",   // leeg = ingebouwd standaardlogo
+  newMonths: 4,   // hoeveel maanden een boek als 'Nieuw' geldt
   pickupLocations: ["Oss (NL)","Gerwen (NL)","Lobith (NL)","Bierbeek (B)","Antwerpen (B)","Utrecht (NL) — eventueel","Leiden (NL) — eventueel"]
 };
 let settings = {};
@@ -1927,6 +1933,10 @@ function fillSettingsForm(){
   document.getElementById("setName").value    = settings.siteName   || "";
   document.getElementById("setEmail").value   = settings.email      || "";
   document.getElementById("setPreview").value = settings.previewText|| "";
+  const nm = (settings.newMonths!=null ? settings.newMonths : DEFAULT_SETTINGS.newMonths);
+  document.getElementById("setNewMonths").value = nm;
+  const nh=document.getElementById("newHint");
+  if(nh) nh.textContent = "Binnen "+nm+" "+(nm==1?"maand":"maanden")+" toegevoegd = met 'Nieuw' bovenaan.";
   document.getElementById("setPickup").value  = (settings.pickupLocations || DEFAULT_SETTINGS.pickupLocations).join("\n");
   pendingLogo = null;
   document.getElementById("setLogoFile").value = "";
@@ -1962,12 +1972,18 @@ function saveSettings(){
   settings.siteName    = document.getElementById("setName").value.trim()    || DEFAULT_SETTINGS.siteName;
   settings.email       = document.getElementById("setEmail").value.trim()   || DEFAULT_SETTINGS.email;
   settings.previewText = document.getElementById("setPreview").value.trim() || DEFAULT_SETTINGS.previewText;
+  let nm = parseInt(document.getElementById("setNewMonths").value,10);
+  if(isNaN(nm) || nm<0) nm = DEFAULT_SETTINGS.newMonths;
+  if(nm>60) nm = 60;
+  settings.newMonths = nm;
   const locs = document.getElementById("setPickup").value.split("\n").map(s=>s.trim()).filter(Boolean);
   settings.pickupLocations = locs.length ? locs : DEFAULT_SETTINGS.pickupLocations.slice();
   if(pendingLogo !== null) settings.logo = pendingLogo;   // gewijzigd (data-URI of "" voor standaard)
   persist();
   applySettings();
   renderTexts();
+  renderGrid();
+  fillSettingsForm();
   const m=document.getElementById("setSaved");
   if(m){ m.style.display="inline"; setTimeout(()=>m.style.display="none",1800); }
 }
@@ -2109,7 +2125,10 @@ function isNew(b){
   if(!b || !b.dateAdded) return false;
   const d = new Date(b.dateAdded);
   if(isNaN(d.getTime())) return false;
-  const cutoff = new Date(); cutoff.setMonth(cutoff.getMonth()-4);
+  let months = parseInt(settings && settings.newMonths, 10);
+  if(isNaN(months)) months = DEFAULT_SETTINGS.newMonths;
+  if(months<=0) return false;
+  const cutoff = new Date(); cutoff.setMonth(cutoff.getMonth()-months);
   return d >= cutoff;
 }
 /* Sorteervolgorde: 0 = nieuw (bovenaan), 1 = binnenkort, 2 = de rest */
