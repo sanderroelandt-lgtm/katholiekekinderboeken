@@ -236,6 +236,7 @@
 
   /* 'Nieuw'-markering */
   .book-card.is-new{border-top:3px solid var(--gold);}
+  .cover.loading{background:var(--soft);}
   .new-flag{
     position:absolute;top:8px;left:8px;z-index:2;
     background:var(--gold);color:#2a1f1a;
@@ -925,6 +926,7 @@ function catalogDoc(){ return db.collection("catalog").doc("main"); }
 
 // Covers die in de database staan (boek-id -> data-URI), geladen bij opstarten
 let DB_COVERS = {};
+let coversReady = false;   // true zodra de covers geladen zijn (of er geen database is)
 // Cover ophalen: database-cover eerst, dan eigen (lokale) cover, dan de ingebedde
 function coverFor(b){
   if(!b) return "";
@@ -2197,16 +2199,22 @@ function renderGrid(){
     const sel = selected.has(b.id);
     const nw = isNew(b);
     const cov = coverFor(b);
-    const coverHtml = cov
-      ? `<img src="${cov}" alt="${esc(b.title)}">`
-      : placeholderCover(b.title);
+    let coverHtml, coverClass = "cover";
+    if(cov){
+      coverHtml = `<img src="${cov}" alt="${esc(b.title)}">`;
+    }else if(!coversReady){
+      coverHtml = "";                 // covers worden nog geladen
+      coverClass = "cover loading";
+    }else{
+      coverHtml = placeholderCover(b.title);
+    }
     const feats = [];
     if(b.format) feats.push("Formaat: "+esc(b.format));
     if(b.pages)  feats.push(esc(b.pages)+" pagina's");
     if(b.color)  feats.push(esc(b.color));
     return `<div class="book-card ${sel?'selected':''} ${nw?'is-new':''} ${b.status==='uitverkocht'?'sold':''}" data-id="${b.id}">
       <div class="check">✓</div>
-      <div class="cover">${nw?'<span class="new-flag">Nieuw</span>':''}${coverHtml}</div>
+      <div class="${coverClass}">${nw?'<span class="new-flag">Nieuw</span>':''}${coverHtml}</div>
       <div class="title">${esc(b.title)}</div>
       ${b.price?`<div class="price">${esc(b.price)}</div>`:""}
       ${b.description?`<div class="desc">${esc(b.description)}</div>`:""}
@@ -2828,18 +2836,26 @@ async function init(){
   setupAdminLoginUI();
   setCopyright();
 
-  if(firebaseReady() && initFirebase()){
-    try{ await loadFromFirestore(); await loadCovers(); }
+  const useFb = firebaseReady() && initFirebase();
+  if(useFb){
+    try{ await loadFromFirestore(); }   // catalogus-tekst (klein, snel)
     catch(e){ console.warn("Catalogus uit database laden mislukt — ingebouwde versie wordt getoond.", e); }
     watchAuth();
+  }else{
+    coversReady = true;                 // geen database: geen losse covers om op te wachten
   }
 
-  applySettings();      // naam, e-mail, logo en voorbeeldtekst toepassen (ook op .about-logo)
+  applySettings();
   renderTexts();
   renderCategories();
-  renderGrid();
+  renderGrid();        // boeken meteen tonen; covers vallen straks in
   renderOrderBar();
   route();
+
+  if(useFb){
+    // Covers op de achtergrond laden en daarna de afbeeldingen invullen
+    loadCovers().finally(()=>{ coversReady = true; renderGrid(); });
+  }
 }
 init();
 </script>
