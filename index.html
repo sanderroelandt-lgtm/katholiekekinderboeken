@@ -2522,6 +2522,7 @@ async function seedDatabase(){
 }
 
 function renderAdmin(){
+  setupAdminLoginUI();
   document.getElementById("adminLogin").style.display = adminLoggedIn? "none":"block";
   document.getElementById("adminPanel").style.display = adminLoggedIn? "block":"none";
   if(!adminLoggedIn) return;
