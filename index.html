@@ -63,8 +63,8 @@
   a:hover{text-decoration:underline;}
   p{margin:.6em 0;}
   img{max-width:100%;display:block;}
-  .ornament{text-align:center;color:var(--gold);font-size:1.2rem;margin:1.4rem 0;letter-spacing:.4em;}
-  .ornament::before{content:"\276E \2042 \276F";}
+  .ornament{text-align:center;color:var(--gold);font-size:1.1rem;margin:1.8rem 0;letter-spacing:.5em;}
+  .ornament::before{content:"\2039 \2756 \203A";}
 
   /* ============================================================
      LAYOUT
@@ -277,6 +277,7 @@
   /* Knoppen */
   .btn{
     font-family:var(--font-head);font-size:.92rem;cursor:pointer;
+    display:inline-block;text-align:center;text-decoration:none;line-height:1.2;
     padding:10px 18px;border-radius:2px;border:1px solid var(--accent);
     background:var(--accent);color:#fff;transition:background .15s,color .15s,border-color .15s;
   }
@@ -352,7 +353,13 @@
   .iban-card .who{font-size:.95rem;color:var(--text);}
   .copy-iban{margin-top:8px;}
 
-  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:start;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:stretch;}
+  /* Op 'over ons': beide kaders gelijk (zelfde stijl, uitlijning en hoogte). */
+  .two-col > .card{margin:0;display:flex;flex-direction:column;}
+  .two-col > .card > p:last-child{margin-top:auto;margin-bottom:0;}
+  .two-col > .card .who{font-size:.95rem;color:var(--text);margin-top:2px;}
+  .two-col > .card .iban{font-family:var(--font-head);font-weight:700;font-size:1.25rem;
+    color:var(--accent);letter-spacing:1px;margin:6px 0 4px;user-select:all;}
 
   /* ============================================================
      ADMIN
@@ -500,17 +507,17 @@
     <div class="prose" id="aboutFull"></div>
     <div class="ornament"></div>
     <div class="two-col">
-      <div class="iban-card">
-        <div class="label">Steun ons met een gift</div>
+      <div class="card">
+        <h3>Steun ons met een gift</h3>
         <div class="who" id="aboutIbanWho"></div>
         <div class="iban" id="aboutIban"></div>
-        <button class="btn outline small copy-iban" onclick="copyIban('aboutIban')">IBAN kopiëren</button>
+        <p><button class="btn outline small copy-iban" onclick="copyIban('aboutIban')">IBAN kopiëren</button></p>
       </div>
       <div class="card">
         <h3>In samenwerking met</h3>
         <p>Dit initiatief werkt samen met <strong>Bibliotheca Catholica</strong>, een
            uitgebreide bron voor katholieke literatuur.</p>
-        <p><a href="https://www.bibliocatho.org" target="_blank" rel="noopener">Bezoek bibliocatho.org &raquo;</a></p>
+        <p><a class="btn outline small" href="https://www.bibliocatho.org" target="_blank" rel="noopener">Bezoek bibliocatho.org &raquo;</a></p>
       </div>
     </div>
   </section>
@@ -805,6 +812,12 @@
         <h3 style="margin-top:0;">Covers exporteren uit de database</h3>
         <p class="note">Downloadt alle covers die op dit moment in de database staan als een ZIP-bestand (map <code>covers/</code>, met <code>.jpg</code>/<code>.png</code> per boek-id). Handig als back-up of om naar GitHub te uploaden.</p>
         <p><button class="btn" onclick="exportCoversZip()">Covers downloaden als ZIP</button></p>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0;">Catalogus exporteren uit de database</h3>
+        <p class="note">Downloadt de actuele catalogus (boeken, categorieën, teksten, instellingen) als één JSON-bestand — zónder de zware cover-data. Handig als back-up, of om het ingebouwde "vangnet" in de code te verversen.</p>
+        <p><button class="btn" onclick="exportCatalogJson()">Catalogus downloaden als JSON</button></p>
       </div>
 
       <div class="card">
@@ -2703,6 +2716,33 @@ function ensureJSZip(){
     document.head.appendChild(s);
   });
 }
+async function exportCatalogJson(){
+  if(!firebaseReady() || !db){ a2log("Geen database gekoppeld."); return; }
+  if(!isOwner()){ a2log("Alleen de beheerder kan dit."); return; }
+  a2log("Bezig met laden van de catalogus uit de database…");
+  let snap;
+  try{ snap = await catalogDoc().get(); }
+  catch(e){ a2log("Laden mislukt: "+e.message); return; }
+  if(!snap.exists){ a2log("Er staat geen catalogus in de database (catalog/main ontbreekt)."); return; }
+  const d = snap.data() || {};
+  // Boeken zonder zware cover-data (covers staan apart op GitHub / in de covers-collectie)
+  const books = Array.isArray(d.books) ? d.books.map(b=>{ const c=Object.assign({},b); delete c.cover; return c; }) : [];
+  const out = {
+    books,
+    categories: Array.isArray(d.categories) ? d.categories : [],
+    texts: (d.texts && typeof d.texts==="object") ? d.texts : {},
+    settings: (d.settings && typeof d.settings==="object") ? d.settings : {},
+    exported: new Date().toISOString()
+  };
+  try{
+    const blob = new Blob([JSON.stringify(out, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=url; a.download="catalogus-uit-database.json"; a.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 8000);
+    a2log("Klaar — catalogus gedownload: "+books.length+" boeken, "+out.categories.length+" categorieën.");
+  }catch(e){ a2log("Downloaden mislukt: "+e.message); }
+}
+
 async function exportCoversZip(){
   if(!firebaseReady() || !db){ a2log("Geen database gekoppeld."); return; }
   if(!isOwner()){ a2log("Alleen de beheerder kan dit."); return; }
