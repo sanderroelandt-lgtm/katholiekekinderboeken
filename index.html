@@ -986,7 +986,7 @@ let DB_COVERS = {};
 let coversReady = false;   // true zodra de covers geladen zijn (of er geen database is)
 
 // --- Covers als losse bestanden op GitHub (snel, gecachet, geen database nodig) ---
-// boek-id -> bestandsextensie. Deze covers staan in de map "covers/" naast deze pagina.
+// boek-id -> bestandsextensie. Deze covers staan als losse bestanden in de
 // Een nieuw/aangepaste cover via het adminpaneel gaat nog wél naar de database
 // (en wint dan van het GitHub-bestand), zodat dagelijks beheer in één stap blijft.
 const GH_COVERS = {
@@ -1063,7 +1063,7 @@ const GH_COVERS = {
 };
 // URL van een GitHub-cover (of "" als die er niet is)
 function ghCoverURL(id){
-  return GH_COVERS[id] ? ("covers/" + id + "." + GH_COVERS[id]) : "";
+  return GH_COVERS[id] ? (id + "." + GH_COVERS[id]) : "";
 }
 
 // Cover ophalen — database-cover wint altijd (zo wint een nieuwe upload van het
