@@ -3138,27 +3138,23 @@ function init(){
   setCopyright();
 
   applySettings();
-  // Met database: nog géén (mogelijk verouderde) ingebouwde teksten tonen — die
-  // zouden kort flitsen vóór de database-versie. renderTexts() draait pas in
-  // startDatabase(), zodra de actuele teksten geladen zijn.
+  // De eigenlijke teksten worden hieronder getoond (uit cache of ingebouwde versie),
+  // en daarna ververst vanuit de database. Hier nog niets nodig bij database-modus.
   if(!firebaseConfigured()) renderTexts();
   renderOrderBar();
   route();
 
   if(firebaseConfigured()){
-    // Snel-laad-cache: is er een eerder geladen catalogus? Toon die meteen
-    // (instant, geen flits). Anders een korte laadstatus tot de database er is.
-    const hadCache = loadCatalogCache();
-    if(hadCache){
-      applySettings();
-      renderTexts();
-      renderCategories();
-      renderGrid();        // meteen de laatst bekende catalogus tonen
-      renderOrderBar();
-    }else{
-      const g=document.getElementById("bookGrid");
-      if(g) g.innerHTML='<p style="padding:30px 4px;color:var(--muted);">Catalogus laden…</p>';
-    }
+    // Snel-laad-cache: is er een eerder geladen catalogus? Toon die meteen.
+    // Zo niet (eerste bezoek), toon dan de ingebouwde catalogus uit dit bestand —
+    // die staat al klaar en hoeft niet op Firestore te wachten. In beide gevallen
+    // wordt daarna stil ververst vanuit de database (startDatabase).
+    loadCatalogCache();   // vult de staat met de cache als die er is; anders blijft de ingebouwde versie staan
+    applySettings();
+    renderTexts();
+    renderCategories();
+    renderGrid();         // meteen tonen — geen "laden…" meer
+    renderOrderBar();
     if(document.readyState === "loading"){
       document.addEventListener("DOMContentLoaded", startDatabase);
     }else{
