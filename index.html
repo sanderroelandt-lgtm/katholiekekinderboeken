@@ -771,6 +771,61 @@
     </div>
   </section>
 
+  <!-- ========================================================
+       VERBORGEN PAGINA — BEHEERDER (#admin2)
+       Alleen zichtbaar voor de eigenaar (zie OWNER_EMAILS).
+       Bevat de technische/eenmalige handelingen.
+       ======================================================== -->
+  <section class="page" id="page-admin2">
+    <h1>Beheer — technisch</h1>
+
+    <!-- Niet ingelogd -->
+    <div class="card" id="admin2Login" style="display:none;">
+      <h3 style="margin-top:0;">Inloggen vereist</h3>
+      <p>Log eerst in via het gewone <a href="#admin" onclick="go('admin')">adminpaneel</a> en kom daarna terug naar deze pagina.</p>
+    </div>
+
+    <!-- Ingelogd, maar geen eigenaar -->
+    <div class="card" id="admin2Denied" style="display:none;">
+      <h3 style="margin-top:0;">Geen toegang</h3>
+      <p>Deze pagina is alleen voor de beheerder van de site.</p>
+    </div>
+
+    <!-- Eigenaar -->
+    <div id="admin2Panel" style="display:none;">
+      <div class="admin-bar">
+        <div style="font-family:var(--font-head);">Technische handelingen</div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn ghost small" onclick="go('admin')">← Gewoon adminpaneel</button>
+          <button class="btn ghost small" style="color:var(--accent);border-color:var(--accent);" onclick="adminLogout()">Uitloggen</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0;">Covers exporteren uit de database</h3>
+        <p class="note">Downloadt alle covers die op dit moment in de database staan als een ZIP-bestand (map <code>covers/</code>, met <code>.jpg</code>/<code>.png</code> per boek-id). Handig als back-up of om naar GitHub te uploaden.</p>
+        <p><button class="btn" onclick="exportCoversZip()">Covers downloaden als ZIP</button></p>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0;">Covers opruimen uit de database</h3>
+        <p class="note">Verwijdert uit de database <strong>alléén</strong> de covers die al als bestand op GitHub staan (de lijst <code>GH_COVERS</code>). Covers die nog niet op GitHub staan — bijvoorbeeld een net via admin toegevoegd boek — worden <strong>niet</strong> aangeraakt. Zo versnelt de site zonder dat er ooit een cover verloren gaat.</p>
+        <p><button class="btn" onclick="cleanupCoversFromDB()">Covers opruimen (veilig)</button></p>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0;">Catalogus + covers in database zetten (seeden)</h3>
+        <p class="note">Zet de volledige ingebouwde catalogus, teksten, categorieën én covers in de database. Overschrijft de bestaande databasegegevens. Normaal niet nodig — alleen bij het opnieuw opzetten.</p>
+        <p><button class="btn outline" onclick="seedDatabase()">Alles seeden</button></p>
+      </div>
+
+      <div class="card" style="background:#faf6ee;">
+        <h3 style="margin-top:0;">Logboek</h3>
+        <pre id="admin2Log" style="white-space:pre-wrap;font-size:.82rem;color:var(--muted);margin:0;min-height:1.4em;">Klaar voor gebruik.</pre>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <!-- Sticky bestelbalk -->
@@ -929,10 +984,88 @@ function catalogDoc(){ return db.collection("catalog").doc("main"); }
 // Covers die in de database staan (boek-id -> data-URI), geladen bij opstarten
 let DB_COVERS = {};
 let coversReady = false;   // true zodra de covers geladen zijn (of er geen database is)
-// Cover ophalen: database-cover eerst, dan eigen (lokale) cover, dan de ingebedde
+
+// --- Covers als losse bestanden op GitHub (snel, gecachet, geen database nodig) ---
+// boek-id -> bestandsextensie. Deze covers staan in de map "covers/" naast deze pagina.
+// Een nieuw/aangepaste cover via het adminpaneel gaat nog wél naar de database
+// (en wint dan van het GitHub-bestand), zodat dagelijks beheer in één stap blijft.
+const GH_COVERS = {
+  "schoolbijbel2":"jpg",
+  "schoolbijbel3":"jpg",
+  "schoolbijbel4":"jpg",
+  "geloof-prenten-nl":"png",
+  "geloof-prenten-vl":"png",
+  "graankorreltjes":"jpg",
+  "echt-lezen":"jpg",
+  "omkeerboek":"jpg",
+  "nog-veertien-dagen":"jpg",
+  "koning-gouden-stad":"png",
+  "hoe-jezus-leed":"png",
+  "gulden-kern":"jpg",
+  "kleine-navolging":"jpg",
+  "mini-prentencatechismus":"png",
+  "wat-te-doen-gezin":"jpg",
+  "spiegel-voor-moeders":"jpg",
+  "kerstkind-tot-paaslam":"jpg",
+  "wij-wachten-kerstkind":"png",
+  "kerstkindje-geboren":"jpg",
+  "olv-altijddurende-bijstand":"png",
+  "rozenkransgeheimen":"png",
+  "mijn-engelbewaarder":"jpg",
+  "voor-mijn-kind":"jpg",
+  "onze-vader-weesgegroet":"png",
+  "jezuke-speelt":"jpg",
+  "misboekje-poppe":"jpg",
+  "helden-en-heiligen":"png",
+  "verhalen-lieve-heiligen":"jpg",
+  "missaal":"png",
+  "hemelbloemen1":"jpg",
+  "hemelbloemen2":"jpg",
+  "hemelbloemen3":"png",
+  "hemelbloemen4":"jpg",
+  "hemelbloemen5":"jpg",
+  "hemelbloemen6":"jpg",
+  "hemelbloemen7":"png",
+  "hemelbloemen8":"jpg",
+  "hemelbloemen9":"png",
+  "hemelbloemen10":"jpg",
+  "hemelbloemen11":"jpg",
+  "hemelbloemen12":"png",
+  "hemelbloemen13":"jpg",
+  "hemelbloemen14":"jpg",
+  "hemelbloemen15":"png",
+  "hemelbloemen16":"jpg",
+  "hemelbloemen17":"jpg",
+  "hemelbloemen18":"jpg",
+  "kbvgh1":"jpg",
+  "kbvgh2":"jpg",
+  "kbvgh3":"png",
+  "kbvgh4":"png",
+  "kbvgh5":"jpg",
+  "kbvgh6":"jpg",
+  "kbvgh7":"jpg",
+  "kbvgh8":"jpg",
+  "kbvgh9":"jpg",
+  "kbvgh10":"jpg",
+  "kbvgh11":"jpg",
+  "kbvgh12":"jpg",
+  "kbvgh13":"jpg",
+  "kbvgh14":"jpg",
+  "kbvgh15":"jpg",
+  "kbvgh16":"png",
+  "kbvgh17":"jpg",
+  "kbvgh18":"png"
+};
+// URL van een GitHub-cover (of "" als die er niet is)
+function ghCoverURL(id){
+  return GH_COVERS[id] ? ("covers/" + id + "." + GH_COVERS[id]) : "";
+}
+
+// Cover ophalen — database-cover wint altijd (zo wint een nieuwe upload van het
+// GitHub-bestand). Daarna het GitHub-bestand, dan de eigen (lokale) cover, dan de ingebedde.
 function coverFor(b){
   if(!b) return "";
-  return DB_COVERS[b.id] || b.cover || EMBEDDED_COVERS[b.id] || "";
+  return DB_COVERS[b.id] || ghCoverURL(b.id) || b.cover || EMBEDDED_COVERS[b.id] || "";
 }
 
 
@@ -2056,7 +2189,7 @@ function placeholderCover(title){
 /* ================================================================
    ROUTING
    ================================================================ */
-const PAGES = ["boeken","over-ons","donaties","contact","admin"];
+const PAGES = ["boeken","over-ons","donaties","contact","admin","admin2"];
 function go(page){ location.hash = page; }
 function route(){
   let page = (location.hash||"#boeken").replace("#","");
@@ -2068,6 +2201,7 @@ function route(){
     a.classList.toggle("active", a.dataset.page===page);
   });
   if(page==="admin") renderAdmin();
+  if(page==="admin2") renderAdmin2();
   window.scrollTo(0,0);
 }
 window.addEventListener("hashchange", route);
@@ -2203,7 +2337,11 @@ function renderGrid(){
     const cov = coverFor(b);
     let coverHtml, coverClass = "cover";
     if(cov){
-      coverHtml = `<img src="${cov}" alt="${esc(b.title)}">`;
+      // Als de bron een GitHub-bestand is en dat ontbreekt, val terug op de
+      // database-cover (indien aanwezig). loading="lazy": pas laden bij scrollen.
+      const fb = (cov === ghCoverURL(b.id) && DB_COVERS[b.id]) ? DB_COVERS[b.id] : "";
+      const onerr = fb ? ` onerror="this.onerror=null;this.src='${fb}';"` : "";
+      coverHtml = `<img loading="lazy" src="${cov}" alt="${esc(b.title)}"${onerr}>`;
     }else if(!coversReady){
       coverHtml = "";                 // covers worden nog geladen
       coverClass = "cover loading";
@@ -2483,7 +2621,7 @@ function adminLogout(){
 }
 function watchAuth(){
   if(!firebaseReady() || !auth) return;
-  auth.onAuthStateChanged(user=>{ adminLoggedIn = !!user; renderAdmin(); });
+  auth.onAuthStateChanged(user=>{ adminLoggedIn = !!user; renderAdmin(); renderAdmin2(); });
 }
 
 // Past het loginvenster aan: database-modus (e-mail) of lokale modus
@@ -2519,6 +2657,105 @@ async function seedDatabase(){
     }
     alert("Klaar — de catalogus en "+n+" covers staan nu in de database.");
   }catch(e){ alert("Opslaan mislukt:\n"+e.message); }
+}
+
+/* ===== BEHEERDER (#admin2) — alleen voor de eigenaar ===== */
+// Vul hier uw eigen inlog-e-mailadres in. Alleen dit adres ziet en gebruikt #admin2.
+// Meerdere mag ook: ["mij@voorbeeld.be","backup@voorbeeld.be"].
+// Zolang hieronder alleen het voorbeeld staat, is #admin2 voor niemand toegankelijk.
+const OWNER_EMAILS = ["sander.roelandt@gmail.com"];
+function isOwner(){
+  if(!firebaseReady() || !auth || !auth.currentUser) return false;
+  const email = (auth.currentUser.email||"").trim().toLowerCase();
+  return !!email && OWNER_EMAILS.map(e=>e.trim().toLowerCase()).includes(email);
+}
+function a2log(msg){
+  const el=document.getElementById("admin2Log");
+  if(el) el.textContent = msg;
+}
+function renderAdmin2(){
+  const login = document.getElementById("admin2Login");
+  const panel = document.getElementById("admin2Panel");
+  const denied = document.getElementById("admin2Denied");
+  if(!login || !panel || !denied) return;
+  const loggedIn = !!(firebaseReady() && auth && auth.currentUser);
+  if(!loggedIn){
+    login.style.display="block"; panel.style.display="none"; denied.style.display="none";
+    return;
+  }
+  login.style.display="none";
+  if(isOwner()){ panel.style.display="block"; denied.style.display="none"; }
+  else { panel.style.display="none"; denied.style.display="block"; }
+}
+// JSZip alleen laden wanneer nodig (vertraagt de gewone site niet)
+function ensureJSZip(){
+  if(window.JSZip) return Promise.resolve();
+  return new Promise((res,rej)=>{
+    const s=document.createElement("script");
+    s.src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
+    s.onload=()=>res(); s.onerror=()=>rej(new Error("ZIP-bibliotheek kon niet laden"));
+    document.head.appendChild(s);
+  });
+}
+async function exportCoversZip(){
+  if(!firebaseReady() || !db){ a2log("Geen database gekoppeld."); return; }
+  if(!isOwner()){ a2log("Alleen de beheerder kan dit."); return; }
+  a2log("Bezig met laden van de covers uit de database…");
+  let snap;
+  try{ snap = await db.collection("covers").get(); }
+  catch(e){ a2log("Laden mislukt: "+e.message); return; }
+  if(snap.empty){ a2log("Er staan geen covers in de database."); return; }
+  try{ await ensureJSZip(); }catch(e){ a2log(e.message); return; }
+  const zip = new JSZip();
+  const folder = zip.folder("covers");
+  let n=0, bad=0;
+  snap.forEach(doc=>{
+    const d=doc.data();
+    if(d && d.data){
+      const m = /^data:image\/(png|jpe?g);base64,(.+)$/i.exec(d.data);
+      if(m){
+        const ext = m[1].toLowerCase().indexOf("jp")===0 ? "jpg" : "png";
+        folder.file(doc.id+"."+ext, m[2], {base64:true});
+        n++;
+      } else { bad++; }
+    }
+  });
+  a2log("Bezig met inpakken van "+n+" cover(s)…");
+  try{
+    const blob = await zip.generateAsync({type:"blob"});
+    const url = URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=url; a.download="covers-uit-database.zip"; a.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 8000);
+    a2log("Klaar — "+n+" cover(s) gedownload als covers-uit-database.zip."+(bad?(" "+bad+" overgeslagen (onbekend formaat)."):""));
+  }catch(e){ a2log("Inpakken mislukt: "+e.message); }
+}
+async function cleanupCoversFromDB(){
+  if(!firebaseReady() || !db){ a2log("Geen database gekoppeld."); return; }
+  if(!isOwner()){ a2log("Alleen de beheerder kan dit."); return; }
+  a2log("Bezig met controleren van de database…");
+  let snap;
+  try{ snap = await db.collection("covers").get(); }
+  catch(e){ a2log("Laden mislukt: "+e.message); return; }
+  const inDB=[]; snap.forEach(doc=>inDB.push(doc.id));
+  if(inDB.length===0){ a2log("Er staan geen covers in de database."); return; }
+  const safe = inDB.filter(id=>GH_COVERS[id]);     // staan al als bestand op GitHub
+  const skipped = inDB.filter(id=>!GH_COVERS[id]);  // niet op GitHub → niet aanraken
+  if(safe.length===0){
+    a2log("Niets te verwijderen: geen van de "+inDB.length+" database-cover(s) staat (ook) op GitHub.");
+    return;
+  }
+  let msg = "Uit de database verwijderen: "+safe.length+" cover(s) die al als bestand op GitHub staan.";
+  if(skipped.length) msg += "\n\nDeze blijven staan (nog niet op GitHub): "+skipped.length+"\n— "+skipped.join(", ");
+  msg += "\n\nDoorgaan?";
+  if(!confirm(msg)){ a2log("Geannuleerd."); return; }
+  a2log("Bezig met verwijderen…");
+  let n=0, fail=0;
+  for(const id of safe){
+    try{ await db.collection("covers").doc(id).delete(); delete DB_COVERS[id]; n++; }
+    catch(e){ fail++; }
+  }
+  a2log("Klaar — "+n+" verwijderd"+(fail?(", "+fail+" mislukt"):"")+(skipped.length?(", "+skipped.length+" overgeslagen (niet op GitHub)"):"")+".");
+  renderGrid();
 }
 
 function renderAdmin(){
@@ -2845,7 +3082,10 @@ function init(){
   setCopyright();
 
   applySettings();
-  renderTexts();
+  // Met database: nog géén (mogelijk verouderde) ingebouwde teksten tonen — die
+  // zouden kort flitsen vóór de database-versie. renderTexts() draait pas in
+  // startDatabase(), zodra de actuele teksten geladen zijn.
+  if(!firebaseConfigured()) renderTexts();
   renderOrderBar();
   route();
 
