@@ -773,7 +773,7 @@
 
   <!-- ========================================================
        VERBORGEN PAGINA — BEHEERDER (#admin2)
-       Alleen zichtbaar voor de eigenaar (zie OWNER_EMAILS).
+       Alleen zichtbaar voor de eigenaar (zie OWNER_UIDS).
        Bevat de technische/eenmalige handelingen.
        ======================================================== -->
   <section class="page" id="page-admin2">
@@ -2665,14 +2665,15 @@ async function seedDatabase(){
 }
 
 /* ===== BEHEERDER (#admin2) — alleen voor de eigenaar ===== */
-// Vul hier uw eigen inlog-e-mailadres in. Alleen dit adres ziet en gebruikt #admin2.
-// Meerdere mag ook: ["mij@voorbeeld.be","backup@voorbeeld.be"].
-// Zolang hieronder alleen het voorbeeld staat, is #admin2 voor niemand toegankelijk.
-const OWNER_EMAILS = ["sander.roelandt@gmail.com"];
+// Vul hier uw eigen Firebase gebruikers-ID (User UID) in. Alleen deze gebruiker
+// ziet en gebruikt #admin2. De UID vindt u in de Firebase-console onder
+// Authentication → Users. Meerdere mag ook: ["uid1","uid2"].
+// Zolang hieronder de voorbeeldwaarde staat, is #admin2 voor niemand toegankelijk.
+const OWNER_UIDS = ["w0hlvHkw8weLE7A3Wye8Nwf0cEC2"];
 function isOwner(){
   if(!firebaseReady() || !auth || !auth.currentUser) return false;
-  const email = (auth.currentUser.email||"").trim().toLowerCase();
-  return !!email && OWNER_EMAILS.map(e=>e.trim().toLowerCase()).includes(email);
+  const uid = auth.currentUser.uid || "";
+  return !!uid && OWNER_UIDS.includes(uid);
 }
 function a2log(msg){
   const el=document.getElementById("admin2Log");
