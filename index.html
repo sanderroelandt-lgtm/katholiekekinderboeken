@@ -950,11 +950,11 @@ let ORDER_EMAIL = "katholiekekinderboeken@outlook.com";
 /* Site-instellingen (aanpasbaar via admin) */
 const DEFAULT_SETTINGS = {
   siteName: "Katholieke Kinderboeken",
-  email: "katholiekekinderboeken@outlook.com",
+  email: "info@katholiekekinderboeken.com",
   previewText: "Katholieke kinderboeken opnieuw uitgegeven. Bekijk de catalogus en bestel.",
   logo: "",   // leeg = ingebouwd standaardlogo
   newMonths: 4,   // hoeveel maanden een boek als 'Nieuw' geldt
-  pickupLocations: ["Oss (NL)","Gerwen (NL)","Lobith (NL)","Bierbeek (B)","Antwerpen (B)","Utrecht (NL) — eventueel","Leiden (NL) — eventueel"]
+  pickupLocations: ["Gerwen (NL)","Lobith (NL)","Bierbeek (B)","Antwerpen (B)","Oss (NL) — mogelijk langere bezorgtijd","Utrecht (NL) — langere bezorgtijd","Leiden (NL) — langere bezorgtijd"]
 };
 let settings = {};
 let DEFAULT_LOGO = "";          // ingebouwd logo (wordt bij opstarten vastgelegd)
@@ -1089,18 +1089,19 @@ function coverFor(b){
 
 /* ---- Categorieën (standaard volgorde; aanpasbaar via het adminpaneel) ---- */
 const DEFAULT_CATEGORIES = [
-  "RK Schoolbijbels",
-  "Hardcover met kleurplaten",
-  "Katholieke leesboeken",
+  "Rooms Katholieke Bijbels",
+  "Hardcover met gekleurde platen",
   "Biecht en Eerste H. Communie",
-  "Geloofskennis en gebeden",
-  "Katholieke opvoeding",
-  "Advent en Kersttijd",
-  "Maria verering",
+  "Missaals",
+  "Algemeen, geloofskennis en gebeden",
   "Voor de allerkleinsten",
-  "Korte heiligenverhalen",
+  "Maria verering",
+  "Katholieke opvoeding",
+  "Om te leren lezen",
   "Hemelbloemen",
-  "Kleine boeken van grote heiligen"
+  "Kleine boeken van grote heiligen",
+  "Korte heiligenverhalen",
+  "Vastentijd, Advent en Kersttijd"
 ];
 
 /* ================================================================
@@ -1115,87 +1116,83 @@ const EMBEDDED_COVERS = {};
 const DEFAULT_BOOKS = [
   {
     "id": "schoolbijbel2",
-    "title": "RK Schoolbijbel — Tweede leerjaar",
-    "category": "RK Schoolbijbels",
+    "title": "RK Bijbel - 1e boek",
+    "category": "Rooms Katholieke Bijbels",
     "price": "€ 4,00",
-    "description": "Het eerste deel van de Bijbelreeks voor de Rooms-Katholieke scholen, door Alphons Timmermans. Geschikt om voor te lezen vanaf ongeveer de kleuterleeftijd. De meest kenmerkende verhalen uit het Nieuwe Testament, eenvoudig en boeiend verteld met fraaie illustraties. In 2026 verschijnen in deze reeks ook delen voor het vijfde en zesde leerjaar.",
+    "description": "Het eerste deel van de Bijbelreeks voor de Rooms-Katholieke scholen, door Alphons Timmermans. Drie delen in een boek. Geschikt om voor te lezen vanaf ongeveer de kleuterleeftijd. De meest kenmerkende verhalen uit het Nieuwe Testament, eenvoudig en boeiend verteld met fraaie illustraties. In 2026 verschijnen in deze reeks ook delen voor het vijfde en zesde leerjaar.",
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
     "status": "beschikbaar",
-    "cover": ""
+    "dateAdded": "2026-01-03"
   },
   {
     "id": "schoolbijbel3",
-    "title": "RK Schoolbijbel — Derde leerjaar",
-    "category": "RK Schoolbijbels",
+    "title": "RK Bijbel — 2e boek",
+    "category": "Rooms Katholieke Bijbels",
     "price": "€ 4,00",
-    "description": "Het tweede deel van de Bijbelreeks door Alphons Timmermans. Geschikt om voor te lezen vanaf ongeveer het eerste leerjaar (groep 3). Verhalen uit het Oude en Nieuwe Testament, verdiept en boeiend verteld met fraaie illustraties.",
+    "description": "Het tweede deel van de Bijbelreeks door Alphons Timmermans. Drie delen in een boek. Geschikt om voor te lezen vanaf ongeveer het eerste leerjaar (groep 3). Verhalen uit het Oude en Nieuwe Testament, verdiept en boeiend verteld met fraaie illustraties.",
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
     "status": "beschikbaar",
-    "cover": ""
+    "dateAdded": "2026-01-03"
   },
   {
     "id": "schoolbijbel4",
-    "title": "RK Schoolbijbel — Vierde leerjaar",
-    "category": "RK Schoolbijbels",
+    "title": "RK Bijbel — 3e boek",
+    "category": "Rooms Katholieke Bijbels",
     "price": "€ 4,00",
-    "description": "Het derde deel van de Bijbelreeks door Alphons Timmermans. Geschikt om voor te lezen vanaf ongeveer het tweede leerjaar. Verhalen uit het Oude en Nieuwe Testament, verdiept en boeiend verteld met fraaie illustraties.",
+    "description": "Het derde deel van de Bijbelreeks door Alphons Timmermans. Drie delen in een boek. Geschikt om voor te lezen vanaf ongeveer het tweede leerjaar. Verhalen uit het Oude en Nieuwe Testament, verdiept en boeiend verteld met fraaie illustraties.",
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
     "status": "beschikbaar",
-    "cover": ""
+    "dateAdded": "2026-01-03"
   },
   {
     "id": "geloof-prenten-nl",
     "title": "Mijn katholieke geloof in prenten (Nederlands)",
-    "category": "Hardcover met kleurplaten",
+    "category": "Hardcover met gekleurde platen",
     "price": "€ 8,00",
     "description": "Tweede druk. Een hardcover prentenboek vol zachte, kleurrijke platen voor kleine kinderen, met de gebeden en waarheden van ons katholieke geloof: de Geloofsbelijdenis, het Onze Vader, het Wees Gegroet, de Blijde, Droevige en Glorievolle Geheimen van de Rozenkrans, de Kruisweg, de Sacramenten en de Gaven van de Heilige Geest.",
     "format": "Hardcover · A5",
     "pages": "96",
     "color": "Kleur",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "geloof-prenten-vl",
     "title": "Mijn katholieke geloof in prenten (Vlaams)",
-    "category": "Hardcover met kleurplaten",
+    "category": "Hardcover met gekleurde platen",
     "price": "€ 7,00",
     "description": "Een hardcover prentenboek vol zachte, kleurrijke platen voor kleine kinderen, met de gebeden en waarheden van ons katholieke geloof: de Geloofsbelijdenis, het Onze Vader, het Wees Gegroet, de Geheimen van de Rozenkrans, de Kruisweg en de Sacramenten.",
     "format": "Hardcover · A5",
     "pages": "88",
     "color": "Kleur",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "graankorreltjes",
     "title": "De wonderbare lotgevallen van drie graankorreltjes",
-    "category": "Hardcover met kleurplaten",
+    "category": "Hardcover met gekleurde platen",
     "price": "€ 6,00",
     "description": "Een wonderschoon verhaal met prachtige prenten over de Heilige Eucharistie en het mysterie van de verandering van brood in het Heilig Lichaam van Onze Heer Jezus Christus.",
     "format": "Hardcover · A5",
     "pages": "48",
     "color": "Kleur",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "echt-lezen",
     "title": "Complete tiendelige serie leesboeken “Echt Lezen”",
-    "category": "Katholieke leesboeken",
+    "category": "Om te leren lezen",
     "price": "€ 30,00",
     "description": "Tiendelige serie leesboekjes van M.C. Versteeg om te leren lezen — van eenvoudige woorden en herhaling tot volwaardige zinnen in deel tien. Onder meer geïllustreerd met katholieke afbeeldingen en teksten.",
     "format": "Paperback · A5",
     "pages": "32 per deel",
     "color": "Kleur",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "omkeerboek",
@@ -1206,8 +1203,7 @@ const DEFAULT_BOOKS = [
     "format": "Hardcover · A5",
     "pages": "72",
     "color": "Kleur",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "nog-veertien-dagen",
@@ -1218,68 +1214,63 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · 21×21 cm",
     "pages": "68",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "koning-gouden-stad",
     "title": "De Koning van de Gouden Stad",
-    "category": "Biecht en Eerste H. Communie",
+    "category": "Algemeen, geloofskennis en gebeden",
     "price": "€ 3,00",
-    "description": "Een klassiek katholiek kinderverhaal.",
+    "description": "Leesboek voor kinderen rond de 12 jaar (plechtige communie / vormsel leeftijd). Een prachtig verhaal over de goede Koning die de bewoners van het land der ballingschap steunt in de geestelijke strijd en liefheeft op de weg naar de Eeuwige, Gouden Stad.",
     "format": "Paperback · A5",
     "pages": "88",
     "color": "Zwart-wit",
     "status": "beschikbaar",
-    "cover": ""
+    "dateAdded": "2026-06-02"
   },
   {
     "id": "hoe-jezus-leed",
     "title": "Hoe Jezus leed",
-    "category": "Geloofskennis en gebeden",
+    "category": "Algemeen, geloofskennis en gebeden",
     "price": "€ 2,00",
     "description": "De kruisweg voor kinderen: veertien afbeeldingen van de kruiswegstaties met bijbehorende overwegingen en gebeden.",
     "format": "Paperback · A6",
     "pages": "40",
     "color": "Kleur",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "gulden-kern",
     "title": "De Gulden Kern",
-    "category": "Geloofskennis en gebeden",
+    "category": "Algemeen, geloofskennis en gebeden",
     "price": "€ 4,00",
     "description": "Leer in dit boek alles over de Traditionele Latijnse Mis (Tridentijnse Mis): van het kerkgebouw zelf tot de gewaden van de priester en de voorwerpen op het altaar, alles benoemd en uitgelegd. Aan het einde van ieder hoofdstuk worden de behandelde onderwerpen ondervraagd.",
     "format": "Paperback · A5",
     "pages": "88",
     "color": "Rood/wit/zwart",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kleine-navolging",
     "title": "Kleine navolging van Jezus",
-    "category": "Geloofskennis en gebeden",
+    "category": "Algemeen, geloofskennis en gebeden",
     "price": "€ 2,00",
     "description": "Waar 'De Navolging van Christus' van Thomas a Kempis wereldberoemd is, legt dit boek voor kleine kinderen de eerste basis om Jezus na te volgen: hoe goed en gehoorzaam Hij was in zijn kindertijd, hoe Hij zich gedroeg en hoeveel Hij van de mensen houdt.",
     "format": "Paperback · A5",
     "pages": "88",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "mini-prentencatechismus",
     "title": "Mini prentencatechismus",
-    "category": "Geloofskennis en gebeden",
+    "category": "Algemeen, geloofskennis en gebeden",
     "price": "€ 3,00",
     "description": "Uitleg over het katholieke geloof aan de hand van kleine afbeeldingen — 65 prenten.",
     "format": "Paperback · A7",
     "pages": "130",
     "color": "Kleur",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "wat-te-doen-gezin",
@@ -1290,8 +1281,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "48",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "spiegel-voor-moeders",
@@ -1302,44 +1292,40 @@ const DEFAULT_BOOKS = [
     "format": "Paperback",
     "pages": "152",
     "color": "",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kerstkind-tot-paaslam",
     "title": "Van Kerstkind tot Paaslam",
-    "category": "Advent en Kersttijd",
+    "category": "Vastentijd, Advent en Kersttijd",
     "price": "€ 3,00",
     "description": "Verhalen voor de zondagmiddag, van de voorvasten tot de Goede Week; vanaf de Goede Week een dagelijkse vertelling over het leven, lijden en sterven van Onze Lieve Heer. Door M. Clarenbeek-van Klaveren.",
     "format": "Paperback · A4",
     "pages": "112",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "wij-wachten-kerstkind",
     "title": "Wij wachten op het kerstkind",
-    "category": "Advent en Kersttijd",
+    "category": "Vastentijd, Advent en Kersttijd",
     "price": "€ 3,00",
     "description": "Vierentwintig vertellingen voor iedere dag van de Advent. Door M. Clarenbeek-van Klaveren.",
     "format": "Paperback · A4",
     "pages": "84",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kerstkindje-geboren",
     "title": "Het kerstkindje is nu geboren",
-    "category": "Advent en Kersttijd",
+    "category": "Vastentijd, Advent en Kersttijd",
     "price": "€ 3,00",
     "description": "Zes vertellingen rondom Kerstmis. Door M. Clarenbeek-van Klaveren.",
     "format": "Paperback · A4",
     "pages": "92",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "olv-altijddurende-bijstand",
@@ -1351,7 +1337,7 @@ const DEFAULT_BOOKS = [
     "pages": "28",
     "color": "Kleur",
     "status": "beschikbaar",
-    "cover": ""
+    "dateAdded": "2026-06-02"
   },
   {
     "id": "rozenkransgeheimen",
@@ -1362,8 +1348,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A6",
     "pages": "38",
     "color": "Kleur",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "herdertjes-fatima",
@@ -1375,7 +1360,7 @@ const DEFAULT_BOOKS = [
     "pages": "28",
     "color": "Kleur",
     "status": "beschikbaar",
-    "cover": ""
+    "dateAdded": "2026-06-02"
   },
   {
     "id": "mijn-engelbewaarder",
@@ -1386,8 +1371,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A6",
     "pages": "36",
     "color": "Kleur",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "voor-mijn-kind",
@@ -1398,8 +1382,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A6",
     "pages": "36",
     "color": "Kleur",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "onze-vader-weesgegroet",
@@ -1410,8 +1393,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A6",
     "pages": "36",
     "color": "Kleur",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "jezuke-speelt",
@@ -1422,20 +1404,19 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "36",
     "color": "Kleur",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "misboekje-poppe",
     "title": "Misboekje Priester Poppe",
-    "category": "Voor de allerkleinsten",
+    "category": "Missaals",
     "price": "€ 8,00",
     "description": "Misgebeden en verklaring van de handelingen van de Heilige Mis volgens de Traditionele Liturgie, ontleend aan het gebedenboek 'Bij den Kindervriend' van Z. Priester Edward Poppe. Verrijkt met bijbehorende afbeeldingen.",
     "format": "Hardcover · 14×15 cm",
     "pages": "68",
     "color": "Kleur",
     "status": "beschikbaar",
-    "cover": ""
+    "dateAdded": "2026-06-02"
   },
   {
     "id": "helden-en-heiligen",
@@ -1446,8 +1427,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Kleur",
-    "status": "uitverkocht",
-    "cover": ""
+    "status": "uitverkocht"
   },
   {
     "id": "verhalen-lieve-heiligen",
@@ -1458,8 +1438,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Kleur",
-    "status": "uitverkocht",
-    "cover": ""
+    "status": "uitverkocht"
   },
   {
     "id": "hemelbloemen1",
@@ -1470,8 +1449,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen2",
@@ -1482,8 +1460,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen3",
@@ -1494,8 +1471,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen4",
@@ -1506,8 +1482,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen5",
@@ -1518,8 +1493,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen6",
@@ -1530,8 +1504,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen7",
@@ -1542,8 +1515,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen8",
@@ -1554,8 +1526,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen9",
@@ -1566,8 +1537,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen10",
@@ -1578,8 +1548,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen11",
@@ -1590,8 +1559,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen12",
@@ -1602,8 +1570,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen13",
@@ -1614,8 +1581,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen14",
@@ -1626,8 +1592,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen15",
@@ -1638,8 +1603,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen16",
@@ -1650,8 +1614,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen17",
@@ -1662,8 +1625,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "hemelbloemen18",
@@ -1674,8 +1636,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh1",
@@ -1686,8 +1647,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh2",
@@ -1698,8 +1658,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh3",
@@ -1710,8 +1669,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh4",
@@ -1722,8 +1680,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh5",
@@ -1734,8 +1691,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh6",
@@ -1746,8 +1702,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh7",
@@ -1758,8 +1713,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh8",
@@ -1770,8 +1724,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh9",
@@ -1782,8 +1735,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh10",
@@ -1794,8 +1746,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh11",
@@ -1806,8 +1757,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh12",
@@ -1818,8 +1768,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh13",
@@ -1830,8 +1779,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh14",
@@ -1842,8 +1790,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh15",
@@ -1854,8 +1801,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh16",
@@ -1866,8 +1812,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh17",
@@ -1878,8 +1823,7 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "kbvgh18",
@@ -1890,20 +1834,67 @@ const DEFAULT_BOOKS = [
     "format": "Paperback · A5",
     "pages": "",
     "color": "Zwart-wit",
-    "status": "beschikbaar",
-    "cover": ""
+    "status": "beschikbaar"
   },
   {
     "id": "missaal",
-    "title": "Missaal — Het Heilig Misoffer (Ordo Missae)",
-    "category": "Geloofskennis en gebeden",
-    "price": "",
-    "description": "Het Ordo Missae — de orde van het Heilig Misoffer volgens de Traditionele Liturgie.",
-    "format": "",
-    "pages": "",
-    "color": "",
+    "title": "Missaal — Het Heilig Misoffer — voor (jong) volwassenen.",
+    "category": "Missaals",
+    "price": "€ 2,00",
+    "description": "Missaal. Het Heilig Misoffer voor (jong) volwassenen; Vaste gebeden van de H. Mis volgens de traditionele liturgie, inclusief afbeeldingen. Om kennis te maken met de eeuwen oude traditie van de Rooms Katholieke kerk of als zakboekje mee te nemen op reis.",
+    "format": "Paperback · A6",
+    "pages": "32",
+    "color": "Kleur",
     "status": "beschikbaar",
-    "cover": ""
+    "dateAdded": "2026-06-02"
+  },
+  {
+    "id": "b1780408266161",
+    "title": "Ik lees al",
+    "category": "Om te leren lezen",
+    "price": "€ 10,00",
+    "description": "Set van 2 boeken met 2 delen per boekje. Totaal 4 delen uit een reeks van 10 delen. 5 euro per boekje, 10 euro tezamen.",
+    "format": "Paperback · A5",
+    "pages": "",
+    "color": "Kleur",
+    "status": "beschikbaar",
+    "dateAdded": "2026-01-02"
+  },
+  {
+    "id": "b1780409419993",
+    "title": "RK Bijbel - 4e boek. Het oude testament",
+    "category": "Rooms Katholieke Bijbels",
+    "price": "€ 5,00",
+    "description": "",
+    "format": "Paperback · A5",
+    "pages": "+300",
+    "color": "Zwart-wit",
+    "status": "binnenkort",
+    "dateAdded": "2026-01-02"
+  },
+  {
+    "id": "b1780409469750",
+    "title": "RK Bijbel - 5e boek - Het nieuwe testament",
+    "category": "Rooms Katholieke Bijbels",
+    "price": "€ 5,00",
+    "description": "",
+    "format": "Paperback · A5",
+    "pages": "+300",
+    "color": "Zwart-wit",
+    "status": "binnenkort",
+    "dateAdded": "2026-01-02"
+  },
+  {
+    "id": "b1780409512691",
+    "title": "RK Bijbel - 6e boek - Handelingen der Apostelen",
+    "category": "Rooms Katholieke Bijbels",
+    "price": "€ 4,00",
+    "description": "",
+    "format": "Paperback · A5",
+    "pages": "",
+    "color": "Zwart-wit",
+    "status": "binnenkort",
+    "dateAdded": "2026-01-02"
   }
 ];
 
@@ -1911,33 +1902,20 @@ const DEFAULT_BOOKS = [
    TEKSTEN  — aanpasbaar via admin
    ================================================================ */
 const DEFAULT_TEXTS = {
-  home_about_title: { label:"Startpagina — titel 'over ons'", value:"Over ons" },
-  home_about_short: { label:"Startpagina — korte 'over ons'",
-    value:"'Katholieke Kinderboeken' is een leken- en particulier initiatief, dat werkt vanuit Stichting Maria-Presentatie, het Rooms-Katholieke boekenapostolaat, in samenwerking met Bibliotheca Catholica. Wij geven katholieke kinderboeken uit de periode 1930–1950 nieuw leven en bieden ze aan tegen drukkosten, zonder winstoogmerk." },
-
+  home_about_title: { label:"Startpagina — titel 'over ons'", value:"\n" },
+  home_about_short: { label:"Startpagina — korte 'over ons'", value:"'Katholieke Kinderboeken' is een leken- en particulier initiatief, dat werkt vanuit Stichting Maria-Presentatie, het Rooms-Katholieke boekenapostolaat, in samenwerking met Bibliotheca Catholica. Wij geven katholieke kinderboeken uit de periode 1930–1950 nieuw leven en bieden ze aan tegen drukkosten, zonder winstoogmerk. " },
   about_title: { label:"Over ons — paginatitel", value:"Over ons" },
-  about_full: { label:"Over ons — volledige tekst",
-    value:"'Katholieke Kinderboeken' is een leken- en particulier initiatief, dat werkt vanuit Stichting Maria-Presentatie, het Rooms-Katholieke boekenapostolaat, in samenwerking met Bibliotheca Catholica.\n\nGepubliceerde boeken uit de periode 1930–1950 geven wij nieuw leven door ze aan te passen aan de hedendaagse taalnormen en opnieuw te laten drukken. Al deze boeken zijn destijds kerkelijk goedgekeurd.\n\nWij bieden dit aan tegen drukkosten, zonder winstoogmerk, zodat het voor iedereen mogelijk is om kinderen een rijkelijk aanbod aan goede katholieke boeken te kunnen geven.\n\nTot meerdere eer en glorie (en kennis) van God, van kinds af aan." },
-
+  about_full: { label:"Over ons — volledige tekst", value:"'Katholieke Kinderboeken’ is een lekeninitiatief van katholieke ouders, dat werkt vanuit ‘Stichting Maria-Presentatie, het Rooms-Katholieke boekenapostolaat’ en in samen-werking met Bibliotheca Catholica. (www.bibliocatho.org)\n\nGepubliceerde boeken tussen  +/- 1930 en 1950 geven wij nieuw leven, door dit -indien nodig- aan te passen naar de hedendaagse taalnormen en opnieuw te laten drukken. \nAl deze boeken zijn destijds kerkelijk goedgekeurd. \nWij bieden dit aan tegen drukkosten, zonder winstoogmerk, zodat het voor iedereen mogelijk is om kinderen een rijkelijk aanbod aan goede katholieke boeken te kunnen geven. Tot meerdere eer en glorie en kennis van God, van kinds af aan. " },
   about_iban_who: { label:"Over ons — naam bij IBAN", value:"Stichting Maria-Presentatie, het Rooms-Katholieke boekenapostolaat" },
-
   donations_title: { label:"Donaties — paginatitel", value:"Donaties" },
-  donations_text: { label:"Donaties — tekst",
-    value:"Wij zijn afhankelijk van giften om de boeken te kunnen drukken en een website op te kunnen zetten en te onderhouden.\n\nAls u dit initiatief wilt steunen, kunt u een gift overbrengen aan onderstaand rekeningnummer. Iedere bijdrage, groot of klein, wordt in dankbaarheid aanvaard." },
+  donations_text: { label:"Donaties — tekst", value:"Wij zijn afhankelijk van giften om de boeken te kunnen drukken en een website op te kunnen zetten en te onderhouden.\n\nAls u dit initiatief wilt steunen, kunt u een gift overbrengen aan onderstaand rekeningnummer. Iedere bijdrage, groot of klein, wordt in dankbaarheid aanvaard." },
   donations_iban_who: { label:"Donaties — naam bij IBAN", value:"Stichting Maria-Presentatie, het Rooms-Katholieke boekenapostolaat" },
-
   iban: { label:"IBAN (rekeningnummer)", value:"NL44ABNA0145663310" },
-
   contact_title: { label:"Contact — paginatitel", value:"Contact" },
-  contact_text: { label:"Contact — tekst",
-    value:"Voor meer informatie, vragen of bestellen kunt u onderstaand formulier gebruiken of ons rechtstreeks een e-mail sturen. Wij beantwoorden uw bericht zo spoedig mogelijk." },
-
-  order_shipping_note: { label:"Bestelling — verzendnotitie",
-    value:"Let op: bij het totaalbedrag komen nog verzendkosten. Wij berekenen deze op basis van uw bestelling en land, en delen ze met u mee per e-mail." },
-  order_payment_note: { label:"Bestelling — betaalnotitie",
-    value:"Betaling gebeurt pas nadat wij u per e-mail het totaalbedrag (inclusief eventuele verzendkosten) en de betaalgegevens hebben toegestuurd." },
-  order_pickup_note: { label:"Bestelling — afhaalnotitie",
-    value:"Afhalen kan op zondagen na de Traditionele H. Mis op de gekozen locatie. Deze locaties hebben mogelijk een langere levertijd. Hebt u een contactpersoon die de boeken voor u kan aannemen op een van deze locaties, vermeld dit dan bij de opmerkingen." }
+  contact_text: { label:"Contact — tekst", value:"Voor meer informatie, vragen of bestellen kunt u onderstaand formulier gebruiken of ons rechtstreeks een e-mail sturen. Wij beantwoorden uw bericht zo spoedig mogelijk." },
+  order_shipping_note: { label:"Bestelling — verzendnotitie", value:"Let op: bij het totaalbedrag komen nog verzendkosten. Wij berekenen deze op basis van uw bestelling en land, en delen ze met u mee per e-mail." },
+  order_payment_note: { label:"Bestelling — betaalnotitie", value:"Betaling gebeurt pas nadat wij u per e-mail het totaalbedrag (inclusief eventuele verzendkosten) en de betaalgegevens hebben toegestuurd." },
+  order_pickup_note: { label:"Bestelling — afhaalnotitie", value:"Afhalen kan op zondagen na de Traditionele H. Mis op de gekozen locatie. Deze locaties hebben mogelijk een langere levertijd. Hebt u een contactpersoon die de boeken voor u kan aannemen op een van deze locaties, vermeld dit dan bij de opmerkingen." }
 };
 
 /* ================================================================
@@ -2027,6 +2005,38 @@ function persistLocal(){
     localStorage.setItem("kkb_settings", JSON.stringify(settings));
     localStorage.setItem("kkb_version", DATA_VERSION);
   }catch(e){}
+}
+
+/* ===== Snel-laad-cache (database-modus) =====
+   Bewaart de laatst geladen database-catalogus in localStorage, los van de
+   offline kkb_*-sleutels. Bij een volgend bezoek tonen we deze meteen (geen
+   "Catalogus laden…"-flits), en verversen daarna stil vanuit Firestore.
+   Covers zitten hier NIET in (die staan op GitHub) — zo blijft de cache klein. */
+function saveCatalogCache(){
+  try{
+    const lightBooks = books.map(b=>{ const c={...b}; c.cover=""; return c; });
+    const payload = { books:lightBooks, texts, categories:CATEGORIES, settings, ts:Date.now() };
+    localStorage.setItem("kkbcache_catalog", JSON.stringify(payload));
+  }catch(e){}
+}
+function loadCatalogCache(){
+  try{
+    const raw = localStorage.getItem("kkbcache_catalog");
+    if(!raw) return false;
+    const d = JSON.parse(raw);
+    if(!d || !Array.isArray(d.books) || !d.books.length) return false;
+    books = d.books;
+    if(Array.isArray(d.categories) && d.categories.length) CATEGORIES = d.categories;
+    if(d.texts && typeof d.texts==="object"){
+      texts = defaultTexts();
+      for(const k in d.texts){ if(k in texts) texts[k]=d.texts[k]; }
+    }
+    if(d.settings && typeof d.settings==="object"){
+      settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+      for(const k in DEFAULT_SETTINGS){ if(k in d.settings) settings[k]=d.settings[k]; }
+    }
+    return true;
+  }catch(e){ return false; }
 }
 
 // Alles opslaan: altijd lokaal (cache), en in de database wanneer er een
@@ -3136,10 +3146,19 @@ function init(){
   route();
 
   if(firebaseConfigured()){
-    // Geen (mogelijk verouderde) ingebouwde catalogus tonen: korte laadstatus,
-    // daarna meteen de database-versie.
-    const g=document.getElementById("bookGrid");
-    if(g) g.innerHTML='<p style="padding:30px 4px;color:var(--muted);">Catalogus laden…</p>';
+    // Snel-laad-cache: is er een eerder geladen catalogus? Toon die meteen
+    // (instant, geen flits). Anders een korte laadstatus tot de database er is.
+    const hadCache = loadCatalogCache();
+    if(hadCache){
+      applySettings();
+      renderTexts();
+      renderCategories();
+      renderGrid();        // meteen de laatst bekende catalogus tonen
+      renderOrderBar();
+    }else{
+      const g=document.getElementById("bookGrid");
+      if(g) g.innerHTML='<p style="padding:30px 4px;color:var(--muted);">Catalogus laden…</p>';
+    }
     if(document.readyState === "loading"){
       document.addEventListener("DOMContentLoaded", startDatabase);
     }else{
@@ -3163,6 +3182,7 @@ async function startDatabase(){
   watchAuth();
   try{
     await loadFromFirestore();   // catalogus-tekst (klein, snel) — de actuele versie
+    saveCatalogCache();          // cache bijwerken voor een instant volgend bezoek
   }catch(e){
     console.warn("Catalogus uit database laden mislukt — ingebouwde versie als terugval.", e);
   }
